@@ -1,0 +1,10 @@
+.hoverImage {
+    transition: transform 0.3s ease;
+    /* Smooth transition */
+}
+
+.hoverImage:hover {
+    transform: scale(1.1);
+    /* Scale up on hover */
+}
+
