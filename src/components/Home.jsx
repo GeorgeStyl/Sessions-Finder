@@ -46,38 +46,21 @@ import { Dialog, DialogTitle,List, ListItem, ListItemButton } from '@mui/materia
 
 
 
-const links = [ {key:'1', refer:'/todolist'}, {key:'2', refer:'/todolist'}];
 
-function SimpleDialog(props) {
-    const { onClose, selectedValue, open } = props;
-    const navigate = useNavigate() 
 
-    const handleClose = () => {
-        onClose(selectedValue);
-    };
 
-    const handleListItemClick = (value) => {
-        onClose(value);
-    };    
-    
-    return(
-        <Dialog onClose={handleClose} open={open}>
-            <DialogTitle>"Owner's Card"</DialogTitle>
-                <List sx={{ pt: 0 }}>
-                    <ListItem  disableGutters>
-                        { links.map( (link) => <ListItemButton onClick={() => {navigate(link.refer, { replace: true } )} } /> ) }        
-                    </ListItem>
-                </List>
-        </Dialog>
-    )
-}
+
+const handleCardMediaClick = () => {
+    alert('CardMedia clicked!');
+};
 
 const MyCard = (props) => {
     const isLargeScreen = useMediaQuery( {query:'(min-width: 1200px)'});
     const isMediumScreen = useMediaQuery({query: '(min-width: 768px)'}); // used for small screens too
-    const navigate = useNavigate()      
-    
+    const navigate = useNavigate()     
+    const [openDialog, setOpenDialog] = React.useState(false)
 
+    
     return (        
         <Card 
         sx={{
@@ -85,13 +68,17 @@ const MyCard = (props) => {
             maxWidth: { xs: 300, sm: 360, md: 500 },  // Responsive MaxWidth
             margin: '0 auto'  // Center the card horizontally on small screens
         }}>
-        <CardMedia
+        <CardMedia onClick={handleCardMediaClick} 
             sx={{ 
                 height: { xs: 120, sm: 140, md: 180 },  // Responsive height
                 backgroundColor: props.genRandColor,
+                image:"/path/to/your/image.jpg",
+                title:"Image",
+                component:"img",
+                alt:"Image Description",
+                cursor: 'pointer',
+                '&:hover': {opacity: 0.8}
             }}
-            image="/static/images/cards/contemplative-reptile.jpg"
-            title="green iguana"
         />
         <CardContent sx={{
             alignItems: "flex",
@@ -99,7 +86,7 @@ const MyCard = (props) => {
         }}>
             <Stack direction="row" spacing={1}>
                 <Chip label="Session Found!" variant="outlined" sx={{color: 'green'}}/>
-                <Chip label="Searching for date..." variant="outlined" sx={{color: 'green'}}/>
+                <Chip label="Searching for date..." variant="outlined" color='warning'/>
             </Stack>
             Owner's Rooom
         </CardContent>
@@ -116,7 +103,7 @@ const MyCard = (props) => {
             </CardActions>
         }
 
-        {isMediumScreen && !isLargeScreen &&
+        {(isMediumScreen && !isLargeScreen) &&
             <CardActions sx={{ 
                 alignItems: "stretch", 
                 justifyContent: "space-between",
@@ -125,12 +112,20 @@ const MyCard = (props) => {
                 <Button size="small">Check</Button>
                 <Button size="small" onClick={(e) => { navigate('/todolist', { replace: true }) }}>Settings</Button>
                 <Button size="small" color="error" onClick={(e) => { navigate('/todolist', { replace: true }) }}>Leave</Button>
-            </CardActions> }
-        {!isMediumScreen && !isLargeScreen &&
-            <CardActions sx={{justifyContent:"center"}}>
-                <Button><h1>...</h1></Button>
             </CardActions>
         }
+        { (!isMediumScreen && !isLargeScreen) &&
+            <CardActions sx={{
+                justifyContent:"center",
+                alignItems: "stretch", 
+                flexDirection: { xs: 'column', sm: 'row' }  // Stack buttons vertically on small screens
+            }}>
+                <Button size="small">Check</Button>
+                <Button size="small" onClick={(e) => { navigate('/todolist', { replace: true }) }}>Settings</Button>
+                <Button size="small" color="error" onClick={(e) => { navigate('/todolist', { replace: true }) }}>Leave</Button>
+            </CardActions>
+        }
+        
     </Card>
 
     );
@@ -152,7 +147,7 @@ const colorsbg = ["white", "red", "yellow"]
 export default function Home() {
     const [rooms, setRooms] = React.useState( [{roomID: "1", roomTitle: "Testing1", avatar: "avatar1", cardImage: "cardImage1", cardOwnerName: "User's 1 card"}, {roomID: "2", roomTitle: "Testing2", avatar: "avatar2", cardImage: "cardImage2", cardOwnerName: "User's 2 card"}, {roomID: "3", roomTitle: "Testing3", avatar: "avatar3", cardImage: "cardImage3", cardOwnerName: "User's 4 card"} ] );
     const navigate = useNavigate()      
-
+    
 
     function genRandColor(){
         let letters = "0123456789ABCDEF"; 

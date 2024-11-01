@@ -38,6 +38,9 @@ import {AuthContext} from './context/AuthContext'
 import Home from './components/Home';
 import TodoList from './components/todoslist';
 import Room from './components/Room'
+import './FileUploader.css';
+
+import FileUploader from './components/FileUploader';
 
 function App() {
 
@@ -84,7 +87,7 @@ function App() {
               <Route path="/room" element={<Room />} />      
             </Routes>
           </React.Fragment>
-
+          <FileUploader/>
     </AuthContext.Provider>
   );
 }
