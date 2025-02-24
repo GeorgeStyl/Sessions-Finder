@@ -63,11 +63,11 @@ const MyCard = (props) => {
     
     return (        
         <Card 
-        sx={{
-            width: '75%', 
-            maxWidth: { xs: 300, sm: 360, md: 500 },  // Responsive MaxWidth
-            margin: '0 auto'  // Center the card horizontally on small screens
-        }}>
+            sx={{
+                width: '75%', 
+                maxWidth: { xs: 300, sm: 360, md: 500 },  // Responsive MaxWidth
+                margin: '0 auto'  // Center the card horizontally on small screens
+            }}>
         <CardMedia onClick={handleCardMediaClick} 
             sx={{ 
                 height: { xs: 120, sm: 140, md: 180 },  // Responsive height
@@ -80,23 +80,25 @@ const MyCard = (props) => {
                 '&:hover': {opacity: 0.8}
             }}
         />
-        <CardContent sx={{
-            alignItems: "flex",
-            justifyContent: "center"
-        }}>
-            <Stack direction="row" spacing={1}>
-                <Chip label="Session Found!" variant="outlined" sx={{color: 'green'}}/>
-                <Chip label="Searching for date..." variant="outlined" color='warning'/>
+        <CardContent 
+            sx={{
+                alignItems: "flex",
+                justifyContent: "center"
+            }}>
+            <Stack direction="row" spacing={1} sx={{justifyContent: "center"}}>
+                <Chip label="Session Found!" variant="outlined" sx={{backgroundColor: 'green', color: 'white'}}/>
+                <Chip label="Searching for date..." variant="outlined" sx={{backgroundColor: 'orange', color: 'white'}}/>
             </Stack>
             Owner's Rooom
         </CardContent>
 
-        {isLargeScreen && 
-            <CardActions sx={{ 
-                alignItems: "stretch", 
-                justifyContent: "space-between",
-                flexDirection: { xs: 'column', sm: 'row' }  // Stack buttons vertically on small screens
-            }}>
+        {isLargeScreen && <CardActions 
+                            sx={{ 
+                                alignItems: "stretch", 
+                                justifyContent: "space-between",
+                                flexDirection: { xs: 'column', sm: 'row' }  // Stack buttons vertically on small screens
+                            }}>
+
                 <Button size="small">Check</Button>
                 <Button size="small" onClick={(e) => { navigate('/todolist', { replace: true }) }}>Settings</Button>
                 <Button size="small" color="error" onClick={(e) => { navigate('/todolist', { replace: true }) }}>Leave</Button>
@@ -104,22 +106,24 @@ const MyCard = (props) => {
         }
 
         {(isMediumScreen && !isLargeScreen) &&
-            <CardActions sx={{ 
-                alignItems: "stretch", 
-                justifyContent: "space-between",
-                flexDirection: { xs: 'column', sm: 'row' }  // Stack buttons vertically on small screens
-            }}>
+            <CardActions 
+                sx={{ 
+                    alignItems: "stretch", 
+                    justifyContent: "space-between",
+                    flexDirection: { xs: 'column', sm: 'row' }  // Stack buttons vertically on small screens
+                }}>
                 <Button size="small">Check</Button>
                 <Button size="small" onClick={(e) => { navigate('/todolist', { replace: true }) }}>Settings</Button>
                 <Button size="small" color="error" onClick={(e) => { navigate('/todolist', { replace: true }) }}>Leave</Button>
             </CardActions>
         }
         { (!isMediumScreen && !isLargeScreen) &&
-            <CardActions sx={{
-                justifyContent:"center",
-                alignItems: "stretch", 
-                flexDirection: { xs: 'column', sm: 'row' }  // Stack buttons vertically on small screens
-            }}>
+            <CardActions 
+                sx={{
+                    justifyContent:"center",
+                    alignItems: "stretch", 
+                    flexDirection: { xs: 'column', sm: 'row' }  // Stack buttons vertically on small screens
+                }}>
                 <Button size="small">Check</Button>
                 <Button size="small" onClick={(e) => { navigate('/todolist', { replace: true }) }}>Settings</Button>
                 <Button size="small" color="error" onClick={(e) => { navigate('/todolist', { replace: true }) }}>Leave</Button>
@@ -163,7 +167,7 @@ export default function Home() {
     return (
         /* *OWNED ROOMS */
         <Container id='ownedDividerContainer' sx={{witdh: "100%", marginTop: "20px"}} >
-            <Accordion expanded sx={{marginBottom: "20px"}}>
+            <Accordion sx={{marginBottom: "20px"}} slotProps={{ transition: { unmountOnExit: true } }} /* for perfomance */>
                 <AccordionSummary
                     expandIcon={<ArrowDownwardIcon />}
                     aria-controls="panel1-content"
@@ -185,13 +189,13 @@ export default function Home() {
                         </Grid>
                     </Box>
             </Accordion> 
-            {/* *JOINED ROOMS* */}
             
-            <Accordion>
+            {/* *JOINED ROOMS* */}
+            <Accordion slotProps={{ transition: { unmountOnExit: true } }} /* for perfomance */>
                     <AccordionSummary
                         expandIcon={<ArrowDownwardIcon/>}
                         aria-controls="panel1-content"
-                        id="panel1-header"
+                        id="panel2-header"
                     >
                         <Typography>Rooms You Have Joined</Typography>
                     </AccordionSummary> 
@@ -201,7 +205,7 @@ export default function Home() {
                                 columnSpacing={{ xs: 1, sm: 2, md: 3 }} 
                                 rowGap={5}
                                 margin='auto'
-                        >  {/* Center items horizontally */}
+                        > 
                             {rooms.map((room) => (
                                 <Grid key={room.roomID} xs={12} sm={6} display="flex" justifyContent="center"> {/* Center cards horizontally */}
                                     <MyCard  genRandColor={genRandColor()} />

@@ -14,6 +14,8 @@ import { PickersDay } from "@mui/x-date-pickers";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 // import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
+import Switch from '@mui/material/Switch';
+
 
 
 
@@ -34,10 +36,12 @@ export default function Room() {
     const handleSetNewVal = (date) => {
     
         if (!date) return;
+        
         setValue(date);
         const pickedDay = new Date(date).getTime();
         const refsDays = refDates.current;
         const inxPickedDay = refsDays.indexOf(pickedDay);
+
         if (inxPickedDay >= 0) {
             refsDays.splice(inxPickedDay, 1);
         } else {
@@ -52,45 +56,70 @@ export default function Room() {
     }
 
     const displayDateCalendraProps = () => {
-
+        console.log('aaaa')
     }
 
     const [pickedDates, setPickedDates] = useState([]);
     console.log("dates", pickedDates);
+
+
+    const [switchChecked, setSwitchChecked] = React.useState(false);
+
+    const handleChange = (event) => {
+        setSwitchChecked(!switchChecked);
+    };
+
+
+
 
     useEffect(() => {
         setPickedDates(refDates.current);
     }, [refDates.current.length]);
 
 
+
+    
+    
+
     return (
-        <Box>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DateCalendar
-                    value = {value}
-                    disablePast
-                    onChange = {(newValue) => handleSetNewVal(newValue)}
-                    slots = {{
-                        day: (props) => {
-                            const dayNumber = new Date(props.day).getTime();
-                            const refDays = refDates.current;
-                            const isSelected = refDays.indexOf(dayNumber) >= 0;
-                            return <PickersDay {...props} selected={isSelected} />;
-                        },
-                    }}
-                />
-            </LocalizationProvider>
+        <>
+        <Box sx={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
+        
+            <Box sx={{padding:'0', margin:'0',height:'100%', verticalAlign:'center'}}>
 
-            <Button onClick = {() => displayDateCalendraProps()}>
-                OK
-            </Button>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DateCalendar
+                        sx={{padding:'0', margin:'0',height:'100%', verticalAlign:'center'}}
+                        
+                        value = {value}
+                        disablePast
+                        onChange = {(newValue) => handleSetNewVal(newValue)}
+                        slots = {{
+                            day: (props) => {
+                                const dayNumber = new Date(props.day).getTime();
+                                const refDays = refDates.current;
+                                const isSelected = refDays.indexOf(dayNumber) >= 0;
+                                return <PickersDay {...props} selected={isSelected} />;
+                            },
+                        }}
+                    />
+                </LocalizationProvider>
+            </Box>
+                <Box sx={{height:'100%', verticalAlign:'center'}}>
+                    <Box>
+                        <Switch
+                            checked={switchChecked}
+                            onChange={handleChange}
+                            inputProps={{ 'aria-label': 'controlled' }}
+                        />
+                    </Box>
+                <Button onClick = {() => displayDateCalendraProps()}>OK</Button>
+                <Button onClick = {() => }>Select Time</Button>
+                <Button onClick = {() => clearSelectedDates()}>Clear All</Button>
+            </Box>
 
-            <Button onClick = {() => clearSelectedDates()}>
-                Cancel
-            </Button>
-            
-                {refDates.current.map( (item) => <Typography>{item}</Typography>)}
-            
         </Box>
+            {refDates.current.map( (item) => <Typography>{item}</Typography>)}
+        </>
     );
 };

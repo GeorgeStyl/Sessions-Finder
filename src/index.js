@@ -8,11 +8,12 @@ import App from './App';
 // import reportWebVitals from './reportWebVitals';
 
 
+const loc = window.location || {};
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
 
-        <BrowserRouter>
+        <BrowserRouter basename={loc.pathname || '/'}>
             <App />
         </BrowserRouter>
         
