@@ -42,6 +42,13 @@ import './FileUploader.css';
 
 import FileUploader from './components/FileUploader';
 
+
+
+// !!!!BOOTSTRAP!!!!!
+/* The following line can be included in your src/index.js or App.js file */
+// import 'bootstrap/dist/css/bootstrap.min.css';
+
+
 function App() {
 
   const [user, setUser] = React.useState({ userName: "", id:0, level:"" });
