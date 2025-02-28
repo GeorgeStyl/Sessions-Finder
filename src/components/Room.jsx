@@ -16,15 +16,80 @@ import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import Switch from '@mui/material/Switch';
 import { styled } from '@mui/material/styles';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import isBetweenPlugin from 'dayjs/plugin/isBetween';
 
 
-const MultiSelectedDays = () => {
+dayjs.extend(isBetweenPlugin);
+
+    const CustomPickersDay = styled(PickersDay, {
+        shouldForwardProp: (prop) => prop !== 'isSelected' && prop !== 'isHovered',
+    })(({ theme, isSelected, isHovered, day }) => ({
+    borderRadius: 0,
+    ...(isSelected && {
+            backgroundColor: theme.palette.primary.main,
+            color: theme.palette.primary.contrastText,
+            '&:hover, &:focus': {
+                backgroundColor: theme.palette.primary.main,
+            },
+    }),
+    ...(isHovered && {
+            backgroundColor: theme.palette.primary.light,
+            '&:hover, &:focus': {
+                backgroundColor: theme.palette.primary.light,
+            },
+        ...theme.applyStyles('dark', {
+            backgroundColor: theme.palette.primary.dark,
+            '&:hover, &:focus': {
+                backgroundColor: theme.palette.primary.dark,
+            },
+        }),
+    }),
+    ...(day.day() === 0 && {
+        borderTopLeftRadius: '50%',
+        borderBottomLeftRadius: '50%',
+    }),
+    ...(day.day() === 6 && {
+            borderTopRightRadius: '50%',
+            borderBottomRightRadius: '50%',
+        }),
+    }));
+
+    const isInSameWeek = (dayA, dayB) => {
+        if (dayB == null) {
+            return false;
+        }
+
+            return dayA.isSame(dayB, 'week');
+        };
+
+    function Day(props) {
+    const { day, selectedDay, hoveredDay, ...other } = props;
+
+    return (
+            <CustomPickersDay
+                {...other}
+                day={day}
+                sx={{ px: 2.5 }}
+                disableMargin
+                selected={false}
+                isSelected={isInSameWeek(day, selectedDay)}
+                isHovered={isInSameWeek(day, hoveredDay)}
+            />
+        );
+    }
+
+
+
+
+const MultiSelectedDays = () => {    
     const [value, setValue] = useState(null);
     const refDates = useRef([]);
 
 
     const [pickedDates, setPickedDates] = useState([]);
-    console.log("dates", pickedDates);
+    // console.log("dates", pickedDates);
 
 
     const clearSelectedDates = () => {
@@ -49,20 +114,21 @@ const MultiSelectedDays = () => {
         }
     };
 
+    const [hoveredDay, setHoveredDay] = React.useState(null);
+
     useEffect(() => {
         setPickedDates(refDates.current);
     }, [refDates.current.length]);
 
-    return(
-        <Box sx={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
-        
-            <Box sx={{padding:'0', margin:'0',height:'100%', verticalAlign:'center'}}>
 
+//    if (props.isweekly === 'no' ) 
+        return(
+            <>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DateCalendar
                             sx={{padding:'0', margin:'0',height:'100%', verticalAlign:'center'}}
                             value = {value}
-                            disablePast
+                            // disablePast
                             onChange = {(newValue) => handleSetNewVal(newValue)}
                             slots = {{  //! Select multiple days
                                 day: (props) => {
@@ -74,29 +140,70 @@ const MultiSelectedDays = () => {
                             }}
                         />
                 </LocalizationProvider>
-            </Box>
-        </Box>
-    );
+
+                <button onClick={ (e) => { console.log("button clicked",pickedDates) } }>OK</button>
+                <button onClick={clearSelectedDates}>CANCEL</button>
+            </>
+        );
 }
 
 
 
 
+
+
 const WeeklySelectedDays = () => {
+    const [value, setValue] = useState(null);
+    const refDates = useRef([]);
+
+
+    const [pickedDates, setPickedDates] = useState([]);
+
+    const handleSetNewVal = (date) => {
+    
+        if (!date) return;
+        
+        setValue(date);
+        const pickedDay = new Date(date).getTime();
+        const refsDays = refDates.current;
+        const inxPickedDay = refsDays.indexOf(pickedDay);
+
+        if (inxPickedDay >= 0) {
+            refsDays.splice(inxPickedDay, 1);
+        } else {
+            refsDays.push(pickedDay);
+        }
+    };
+
+    useEffect(() => {
+        setPickedDates(refDates.current);
+    }, [refDates.current.length]);
+
+
+    const [hoveredDay, setHoveredDay] = React.useState(null);
     
 
-
-
-
     return(
-        <Box sx={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
-        
-            <Box sx={{padding:'0', margin:'0',height:'100%', verticalAlign:'center'}}>
-
-
-            </Box>
-        </Box>
-    )
+        <>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DateCalendar
+                    value={value}
+                    onChange={(newValue) => setValue(newValue)}
+                    showDaysOutsideCurrentMonth
+                    displayWeekNumber
+                    slots={{ day: Day }}
+                    slotProps={{
+                        day: (ownerState) => ({
+                            selectedDay: value,
+                            hoveredDay,
+                            onPointerEnter: () => setHoveredDay(ownerState.day),
+                            onPointerLeave: () => setHoveredDay(null),
+                        }),
+                    }}
+                />
+            </LocalizationProvider>
+        </>
+    );
 }
 
 
@@ -111,21 +218,26 @@ export default function Room() {
     const [currentDate, setCurrentDate] = useState(null);
     const [dateColors, setDateColors] = useState({});
     const calendarRef = useRef(null);
+    // Switch
+    const [isEnabled, setIsEnabled] = useState(false);
+    const toggleSwitch = () => {
+        console.log('toggleswitch')
+        setIsEnabled(!isEnabled);
+    }
 
 
 
-
-
-
-
-
-
-    
-    
 
     return (
-        <>
-            <MultiSelectedDays/>
-        </>
+
+        <Box sx={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
+            <Box sx={{padding:'0', margin:'0',height:'100%', verticalAlign:'center'}}>
+                <FormGroup>
+                    <FormControlLabel control={<Switch  onChange={toggleSwitch}/>} label={isEnabled ? "Disable Weekly Pick" : "Enable Weekly Pick"} />
+                </FormGroup>
+                { isEnabled && <WeeklySelectedDays />}
+                { !isEnabled && <MultiSelectedDays />  }              
+            </Box>
+        </Box>
     );
 };
