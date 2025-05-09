@@ -1,3 +1,27 @@
+# Collaborative Scheduling App
+
+This web application allows users to **create private scheduling rooms**, **invite others**, and **find the best date for an event** collaboratively. It was built using React and bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+## Key Features
+
+- ✨ Users can **create custom "rooms"** for events.
+- 📨 Room invitations can be shared via:
+  - **QR Code**
+  - **Email**
+  - **Unique room code**
+- 📅 Inside each room, participants can:
+  - Access a **shared calendar**
+  - Mark dates as **Available**, **Unavailable**, or **Maybe**
+- ✅ Once all participants have submitted their availability, the app:
+  - **Automatically finds the best matching date/time**
+  - **Notifies everyone via:**
+    - Email
+    - Discord server or direct messages
+
+This tool is ideal for coordinating events like meetings, game nights, trips, or any group activity that requires scheduling.
+
+---
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
